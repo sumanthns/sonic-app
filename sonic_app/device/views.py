@@ -22,38 +22,39 @@ class CreateDeviceView(MethodView):
             )
             db.session.add(device)
             db.session.commit()
-            return redirect(url_for('device.list_devices'))
+            device = Device.query.filter(Device.name==device.name).one()
+            return redirect(url_for('device.edit_device', device_id=device.id))
         flash_errors(form)
         return render_template('device.html', form=form)
 
 
 class EditDeviceView(MethodView):
     def get(self, device_id):
-        device = get_object_or_404(Device, Device.slug == device_id)
+        device = get_object_or_404(Device, Device.id == device_id)
         form = DeviceForm(device)
         return render_template('device.html', form=form)
 
 
     def post(self, device_id):
-        device = get_object_or_404(Device, Device.slug == device_id)
+        device = get_object_or_404(Device, Device.id == device_id)
         form = DeviceForm(device)
         if form.validate_on_submit():
             device.name = request.form.get('name')
             device.model = request.form.get('model')
             db.session.commit()
-            return redirect(url_for('device.show_device', device_id=device.id))
+            return redirect(url_for('device.edit_device', device_id=device.id))
         flash_errors(form)
         return render_template('device.html', form=form)
 
 
-class CreateLayoutView(MethodView):
+class EditLayoutView(MethodView):
     def get(self, device_id):
-        device = get_object_or_404(Device, Device.slug == device_id)
-        form = LayoutFormFactory(device.model).get_layout_form()
+        device = get_object_or_404(Device, Device.id == device_id)
+        form = LayoutFormFactory(device).get_layout_form()
         return render_template('layout.html', form=form)
 
     def post(self, device_id):
-        device = get_object_or_404(Device, Device.slug == device_id)
+        device = get_object_or_404(Device, Device.id == device_id)
         form = LayoutFormFactory(device.model).get_layout_form()
         if form.validate_on_submit():
             form.create_pins(device)

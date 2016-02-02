@@ -1,6 +1,5 @@
-import functools
-import pika
 import json
+import pika
 
 
 class AmqpClient():

@@ -1,10 +1,8 @@
-from flask.ext.script import Command, Server, Manager, prompt
 from flask.ext.migrate import Migrate, MigrateCommand
-#from app import app, db, Role, User
+from flask.ext.script import Server, Manager
+
 from app import app
 from device.models import *
-#from app.models import *
-
 
 # class SetUpCommand(Command):
 #     def run(self):
@@ -46,12 +44,11 @@ from device.models import *
 #             self._prompt_password()
 #         return password, confirm_password
 
-
 migrate = Migrate(app, db)
 manager = Manager(app)
 manager.add_command("runserver", Server())
 manager.add_command("db", MigrateCommand)
-#manager.add_command("setup", SetUpCommand)
+# manager.add_command("setup", SetUpCommand)
 
 if __name__ == "__main__":
     manager.run()

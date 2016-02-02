@@ -1,8 +1,7 @@
 import os
-
+from sonic_app.factory import AppFactory
 from sonic_app.settings import DevelopmentConfig,\
     TestConfig, ProductionConfig
-from sonic_app.factory import AppFactory
 
 configs = {'development': DevelopmentConfig,
            'test': TestConfig,
