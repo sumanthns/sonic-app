@@ -12,13 +12,13 @@ class BaseConfig(object):
     DEBUG = True
 
     URL_MODULES = [
-        'core.urls.routes',
-        'device.urls.routes',
+        'sonic_app.core.urls.routes',
+        'sonic_app.device.urls.routes',
     ]
 
     BLUEPRINTS = [
-        'core.core',
-        'device.device'
+        'sonic_app.core.core',
+        'sonic_app.device.device',
     ]
 
     PI_MODELS = [
@@ -32,6 +32,8 @@ class BaseConfig(object):
         ('B+', 'sonic_app.device.forms.ModelAPlusLayoutForm'),
         ('2', 'sonic_app.device.forms.ModelAPlusLayoutForm'),
     ]
+    A_TYPE_LAYOUTS = ["A", "B"]
+    A_PLUS_TYPE_LAYOUTS = ["A+", "B+", "2"]
 
     SECURITY_PASSWORD_HASH = "bcrypt"
     SECURITY_PASSWORD_SALT = "secret_password_salt"
@@ -44,7 +46,7 @@ class TestConfig(BaseConfig):
 
 
 class DevelopmentConfig(BaseConfig):
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
+    SQLALCHEMY_DATABASE_URI = 'mysql://root@localhost/sonic_app'
     WTF_CSRF_ENABLED = False
 
 

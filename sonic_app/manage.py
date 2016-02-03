@@ -2,7 +2,8 @@ from flask.ext.migrate import Migrate, MigrateCommand
 from flask.ext.script import Server, Manager
 
 from app import app
-from device.models import *
+from sonic_app.ext import db
+# from device.models import *
 
 # class SetUpCommand(Command):
 #     def run(self):

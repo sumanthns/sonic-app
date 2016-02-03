@@ -1,0 +1,21 @@
+{% extends "base.html"%}
+{%block head%}
+{{ super() }}
+<script>
+$( document ).ready(reloadPins({{device.id}}));
+</script>
+{%endblock%}
+
+{% block content%}
+<h2> Device Layout for <a href="{{url_for('device.edit_device', device_id=device.id)}}">{{ device.name}}</a> </h2>
+
+<table class="table">
+    <tbody>
+    {% include "_A_pins.html"%}
+    {% if device.type == "A_Plus" %}
+        {% include "_A_plus_only_pins.html"%}
+    {% endif %}
+    </tbody>
+</table>
+
+{%endblock%}
