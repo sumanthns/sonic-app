@@ -1,5 +1,21 @@
-venv
-**/*.pyc
-.idea
+# general things to ignore
+build/
+dist/
+env/
+venv/
 .env
-*.egg-info
+tmp/
+*.egg-info/
+*.egg
+*.py[cod]
+__pycache__/
+*.so
+**/*.pyc
+*~
+
+# due to using tox and pytest
+.tox
+.cache
+
+# IDE related
+.idea
