@@ -1,4 +1,5 @@
 import json
+import traceback
 
 from sonic_app.lib.amqp_client import AmqpClient
 from sonic_app.lib.config import CONF
@@ -15,13 +16,14 @@ class MessageListener(SonicDaemonApp):
     QUEUE = CONF.app_queue
 
     def __init__(self):
-        self.pid = "/var/run/sonic_app/message_listener.pid"
+        self.pidfile_path = "/var/run/sonic_app/message_listener.pid"
         self.log_path = "/var/log/sonic_app/message_listener.log"
         SonicDaemonApp.__init__(self)
         self.amqp_client = AmqpClient()
         self.manager = Manager()
 
     def run(self):
+        self.logger.debug("Starting message listener")
         self.amqp_client.channel.queue_declare(queue=self.QUEUE)
         self.amqp_client.channel.basic_consume(self._callback,
                                                queue=self.QUEUE,
@@ -41,6 +43,7 @@ class MessageListener(SonicDaemonApp):
         except Exception as e:
             self.logger.error("Error while processing message - {}"
                               .format(e.message))
+            traceback.print_exc()
 
 
 if __name__ == "__main__":
