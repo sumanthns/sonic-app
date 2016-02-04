@@ -22,9 +22,9 @@ class AmqpClient():
 
     def with_open_connection(func):
         def inner(self, *args, **kwargs):
-            self._open_connection()
+            self.open_connection()
             func(self, *args, **kwargs)
-            self._close_connection()
+            self.close_connection()
 
         return inner
 

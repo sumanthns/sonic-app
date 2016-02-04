@@ -4,7 +4,7 @@ import ConfigParser
 class Config(object):
     def __init__(self):
         conf = ConfigParser.RawConfigParser()
-        conf.read("/etc/sonic_client/sonic_client.conf")
+        conf.read("/etc/sonic_app/sonic_app.conf")
 
         # amqp related parameters
         self.amqp_host = conf.get("amqp", "host")
