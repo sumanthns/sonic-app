@@ -1,9 +1,8 @@
 import time
 import traceback
 
-from sonic_app.device.models import Message
-from sonic_app.ext import db
 from sonic_app.lib.amqp_client import publish_message
+from sonic_app.lib.ext_db import init_db
 from sonic_app.lib.sonic_daemon import SonicDaemon
 from sonic_app.lib.sonic_daemon_app import SonicDaemonApp
 
@@ -17,20 +16,31 @@ class MessagePusher(SonicDaemonApp):
     def run(self):
         self.logger.debug("Starting message pusher")
         while True:
+            db = init_db()
             try:
-                for message in Message.query.filter_by(status='queued').all():
-                    queue = message.device.uuid
-                    payload = message.params
+                messages = db.execute(
+                    "SELECT devices.uuid, messages.params, messages.id"
+                    " FROM messages, devices"
+                    " WHERE messages.device_id = devices.id"
+                    " AND messages.status = 'queued'")
+                for message in messages:
+                    self.logger.debug(message)
+                    payload = message['params']
+                    queue = message['uuid']
+                    message_id = message['id']
+                    self.logger.debug(queue)
                     publish_message(queue, payload)
-                    message.status = 'pushed'
-                    db.session.commit()
-                    self.logger.debug("Pushed message {0} for device id {1}".format(payload, message.device_id))
+                    db.execute("UPDATE messages SET status = 'pushed'"
+                               " WHERE id = {}".format(message_id))
+                    self.logger.debug("Pushed message {0} for device uuid {1}"
+                                      .format(payload, queue))
             except Exception as e:
                 self.logger.debug("Oops! Error :{}".format(e.message))
                 traceback.print_exc()
+            db.close()
             time.sleep(10)
 
 
 if __name__ == "__main__":
-    app = MessagePusher()
-    SonicDaemon(app).run()
+    message_pusher = MessagePusher()
+    SonicDaemon(message_pusher).run()

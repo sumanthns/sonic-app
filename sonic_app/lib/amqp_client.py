@@ -13,11 +13,11 @@ class AmqpClient():
         self.connection_parameters = pika.ConnectionParameters(
             host, port, '/', credentials)
 
-    def _open_connection(self):
+    def open_connection(self):
         self.connection = pika.BlockingConnection(self.connection_parameters)
         self.channel = self.connection.channel()
 
-    def _close_connection(self):
+    def close_connection(self):
         self.connection.close()
 
     def with_open_connection(func):
@@ -33,7 +33,7 @@ class AmqpClient():
         self.channel.queue_declare(queue=queue)
         self.channel.basic_publish(exchange='',
                                    routing_key=queue,
-                                   body=json.dumps(msg))
+                                   body=msg)
 
 
 def publish_message(queue, message):

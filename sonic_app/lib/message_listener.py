@@ -24,11 +24,16 @@ class MessageListener(SonicDaemonApp):
 
     def run(self):
         self.logger.debug("Starting message listener")
-        self.amqp_client.channel.queue_declare(queue=self.QUEUE)
-        self.amqp_client.channel.basic_consume(self._callback,
-                                               queue=self.QUEUE,
-                                               no_ack=True)
-        self.amqp_client.channel.start_consuming()
+        try:
+            self.amqp_client.open_connection()
+            self.amqp_client.channel.queue_declare(queue=self.QUEUE)
+            self.amqp_client.channel.basic_consume(self._callback,
+                                                   queue=self.QUEUE,
+                                                   no_ack=True)
+            self.amqp_client.channel.start_consuming()
+        except Exception as e:
+            self.logger.error("Error while starting amqp - {}"
+                              .format(e.message))
 
     def _callback(self, ch, method, properties, body):
         self.logger.debug("Processing {}".format(body))

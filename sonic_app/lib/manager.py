@@ -1,5 +1,4 @@
-from sonic_app.device.models import Device
-from sonic_app.ext import db
+from sonic_app.lib.ext_db import init_db, rows_exist
 
 
 class UnsupportedDeviceError(Exception):
@@ -12,14 +11,28 @@ class UnsupportedPinError(Exception):
 
 class Manager(object):
     def update_pin(self, opts):
+        db = init_db()
         led = opts["led"]
         value = opts["output"]
         device_uuid = opts["device_uuid"]
-        device = Device.query.filter_by(uuid=device_uuid).one()
-        if not device:
+        devices = db.execute("SELECT id FROM devices"
+                             " WHERE uuid = '{}'"
+                             .format(device_uuid))
+        if not rows_exist(devices):
             raise UnsupportedDeviceError()
-        pin = device.pins.query.filter_by(name=led).one()
-        if not pin:
+
+        pins = db.execute("SELECT pins.id FROM pins, devices"
+                          " WHERE pins.device_id = devices.id"
+                          " AND pins.name = '{0}'"
+                          " AND devices.uuid = '{1}'".
+                          format(led, device_uuid))
+        if not rows_exist(pins):
             raise UnsupportedPinError()
-        pin.status = value == "1"
-        db.session.commit()
+
+        db.execute("UPDATE pins"
+                   " JOIN devices ON devices.id = pins.device_id"
+                   " SET pins.status = {0}"
+                   " WHERE pins.name = '{1}'"
+                   " AND devices.uuid = '{2}'".
+                   format(int(value), led, device_uuid))
+
