@@ -1,9 +1,8 @@
-import json
 import pika
 from sonic_app.lib.config import CONF
 
 
-class AmqpClient():
+class AmqpClient:
     def __init__(self):
         host = CONF.amqp_host
         port = CONF.amqp_port
@@ -20,26 +19,8 @@ class AmqpClient():
     def close_connection(self):
         self.connection.close()
 
-    def with_open_connection(func):
-        def inner(self, *args, **kwargs):
-            self.open_connection()
-            func(self, *args, **kwargs)
-            self.close_connection()
-
-        return inner
-
-    @with_open_connection
     def publish(self, queue, msg):
         self.channel.queue_declare(queue=queue)
         self.channel.basic_publish(exchange='',
                                    routing_key=queue,
                                    body=msg)
-
-
-def publish_message(queue, message):
-    amqp_client = AmqpClient()
-    amqp_client.publish(queue, message)
-
-
-
-

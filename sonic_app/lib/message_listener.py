@@ -32,8 +32,8 @@ class MessageListener(SonicDaemonApp):
                                                    no_ack=True)
             self.amqp_client.channel.start_consuming()
         except Exception as e:
-            self.logger.error("Error while starting amqp - {}"
-                              .format(e.message))
+            self.logger.error("Error while starting amqp - {0}\n{1}"
+                              .format(e.message, traceback.format_exc()))
 
     def _callback(self, ch, method, properties, body):
         self.logger.debug("Processing {}".format(body))
@@ -46,9 +46,9 @@ class MessageListener(SonicDaemonApp):
                 else:
                     raise ActionUnsupportedError(key)
         except Exception as e:
-            self.logger.error("Error while processing message - {}"
-                              .format(e.message))
-            traceback.print_exc()
+            self.logger.error("Error while processing message - {0}\n{1}"
+                              .format(e.message, traceback.format_exc()))
+
 
 
 if __name__ == "__main__":
