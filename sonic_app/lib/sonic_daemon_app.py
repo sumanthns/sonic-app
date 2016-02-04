@@ -1,7 +1,6 @@
 import logging
 
 import abc
-from sqlalchemy import create_engine
 
 
 class SonicDaemonApp:
