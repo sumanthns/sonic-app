@@ -9,6 +9,7 @@ class Device(db.Model):
     name = db.Column(db.String(255), unique=True)
     model = db.Column(db.String(255))
     type = db.Column(db.String(255))
+    uuid = db.Column(db.String(255))
     pins = db.relationship("Pin", backref=backref('device'), cascade='delete,all')
     messages = db.relationship("Message", backref=backref('device'), cascade='delete,all')
 

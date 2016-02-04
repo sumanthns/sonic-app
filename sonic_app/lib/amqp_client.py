@@ -1,11 +1,17 @@
 import json
 import pika
+from sonic_app.lib.config import CONF
 
 
 class AmqpClient():
     def __init__(self):
-        host = 'localhost'
-        self.connection_parameters = pika.ConnectionParameters(host)
+        host = CONF.amqp_host
+        port = CONF.amqp_port
+        username = CONF.amqp_username
+        password = CONF.amqp_password
+        credentials = pika.PlainCredentials(username, password)
+        self.connection_parameters = pika.ConnectionParameters(
+            host, port, '/', credentials)
 
     def _open_connection(self):
         self.connection = pika.BlockingConnection(self.connection_parameters)

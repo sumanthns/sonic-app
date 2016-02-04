@@ -1,4 +1,5 @@
 import json
+import uuid
 
 from flask import url_for, render_template, request
 from flask.views import MethodView
@@ -22,6 +23,7 @@ class CreateDeviceView(MethodView):
             device = DeviceFactory(model).get_device()
             device.name = form.name.data
             device.model = model
+            device.uuid = str(uuid.uuid4())
             device.create_pins()
             db.session.add(device)
             db.session.commit()
