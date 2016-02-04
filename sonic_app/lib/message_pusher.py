@@ -30,7 +30,6 @@ class MessagePusher(SonicDaemonApp):
                     payload = message['params']
                     queue = message['uuid']
                     message_id = message['id']
-                    self.logger.debug(queue)
                     self.amqp_client.publish(queue, payload)
                     db.execute("UPDATE messages SET status = 'pushed'"
                                " WHERE id = {}".format(message_id))
