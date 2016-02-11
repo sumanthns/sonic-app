@@ -1,0 +1,7 @@
+<form class="form-inline" role="form" action="{{url_for('device.delete', device_id=device.id)}}" method="post">
+  <div class="form-group">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure about deleting this device?')">
+      <span class="glyphicon glyphicon-remove"></span></button>
+  </div>
+</form>

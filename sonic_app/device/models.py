@@ -14,8 +14,7 @@ class Device(db.Model):
     messages = db.relationship("Message", backref=backref('device'), cascade='delete,all')
 
     __mapper_args__ = {
-        'polymorphic_on':type,
-        'polymorphic_identity':'devices'
+        'polymorphic_on': type,
     }
 
     def create_pins(self):
@@ -25,11 +24,15 @@ class Device(db.Model):
                                  status=False, ))
 
 
+class DeviceNotFoundException(Exception):
+    pass
+
+
 class DeviceFactory():
     def __init__(self, model):
         self.model = model
 
-    def get_device(self):
+    def create_device(self):
         from sonic_app.app import app
         if self.model in app.config.get("A_TYPE_LAYOUTS"):
             device = DeviceA()
@@ -44,7 +47,7 @@ class DeviceA(Device):
     allowed_pins = [2, 3, 4, 14, 15, 17, 18, 27, 22, 23, 24, 10, 9, 25, 11, 8, 7]
 
     __mapper_args__ = {
-        'polymorphic_identity':'A'
+        'polymorphic_identity': 'A'
     }
 
 
@@ -53,7 +56,7 @@ class DeviceAPlus(Device):
                     5, 6, 12, 13, 19, 16, 26, 20, 21]
 
     __mapper_args__ = {
-        'polymorphic_identity':'A_Plus'
+        'polymorphic_identity': 'A_Plus'
     }
 
 
@@ -75,5 +78,3 @@ class Message(db.Model):
     device_id = db.Column(db.Integer, db.ForeignKey('devices.id'))
     status = db.Column(db.String(255))
     params = db.Column(db.String(255))
-
-

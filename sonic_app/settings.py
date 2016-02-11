@@ -7,6 +7,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class BaseConfig(object):
     DATABASE_QUERY_TIMEOUT = 0.5
     WTF_CSRF_ENABLED = True
+    WTF_CSRF_CHECK_DEFAULT = True
     SECRET_KEY = str(uuid.uuid4())
     HOSTNAME = 'localhost'
     DEBUG = True
@@ -25,13 +26,6 @@ class BaseConfig(object):
         'A', 'B', 'A+', 'B+', '2'
     ]
 
-    PI_MODEL_LAYOUTS = [
-        ('A', 'sonic_app.device.forms.ModelALayoutForm'),
-        ('B', 'sonic_app.device.forms.ModelALayoutForm'),
-        ('A+', 'sonic_app.device.forms.ModelAPlusLayoutForm'),
-        ('B+', 'sonic_app.device.forms.ModelAPlusLayoutForm'),
-        ('2', 'sonic_app.device.forms.ModelAPlusLayoutForm'),
-    ]
     A_TYPE_LAYOUTS = ["A", "B"]
     A_PLUS_TYPE_LAYOUTS = ["A+", "B+", "2"]
 
@@ -40,7 +34,8 @@ class BaseConfig(object):
 
 
 class TestConfig(BaseConfig):
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'test.db')
+    # SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'test.db')
+    SQLALCHEMY_DATABASE_URI = 'mysql://root@localhost/sonic_app_test'
     WTF_CSRF_ENABLED = False
     TESTING = True
 
@@ -48,6 +43,7 @@ class TestConfig(BaseConfig):
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = 'mysql://root@localhost/sonic_app'
     WTF_CSRF_ENABLED = False
+    WTF_CSRF_CHECK_DEFAULT = False
 
 
 class ProductionConfig(BaseConfig):

@@ -7,15 +7,29 @@ $( document ).ready(reloadPins({{device.id}}));
 {%endblock%}
 
 {% block content%}
-<h2> Device Layout for <a href="{{url_for('device.edit_device', device_id=device.id)}}">{{ device.name}}</a> </h2>
+<div class="container">
+    <h2>
+        <div class="row">
+            <div class="col-xs-6 col-md-6">
+                Device Layout for <a href="{{url_for('device.show_layout', device_id=device.id)}}">{{ device.name}}</a>
+            </div>
+            <div class="col-xs-6 col-md-6">
+                {% include "_delete_device.html" %}
+            </div>
+        </div>
+    </h2>
 
-<table class="table">
-    <tbody>
-    {% include "_A_pins.html"%}
-    {% if device.type == "A_Plus" %}
+    <h2>Model: {{ device.model }}</h2>
+
+    <table class="table">
+        <tbody>
+        {% include "_A_pins.html"%}
+        {% if device.type == "A_Plus" %}
         {% include "_A_plus_only_pins.html"%}
-    {% endif %}
-    </tbody>
-</table>
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+
 
 {%endblock%}

@@ -7,7 +7,8 @@ def init_db():
     db = engine.connect()
     return db
 
+
 def rows_exist(rows):
-    for row in rows:
+    for _ in rows:
         return True
     return False

@@ -50,7 +50,6 @@ class MessageListener(SonicDaemonApp):
                               .format(e.message, traceback.format_exc()))
 
 
-
 if __name__ == "__main__":
     app = MessageListener()
     SonicDaemon(app).run()

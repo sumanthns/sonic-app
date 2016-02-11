@@ -7,16 +7,11 @@ class DeviceForm(Form):
     name = StringField("name", validators=[DataRequired()])
     model = SelectField('types', validators=[DataRequired()])
 
-    def __init__(self, device=None):
+    def __init__(self, ):
         Form.__init__(self)
 
         from sonic_app.app import app
-
         self.model.choices = [(m, m) for m in app.config.get('PI_MODELS')]
-        if device:
-            self.device = device
-            self.name.data = device.name
-            self.model.data = device.model
 
     def validate(self):
         if not Form.validate(self):
@@ -29,4 +24,3 @@ class DeviceForm(Form):
         if self.model.data not in allowed_models:
             return False
         return True
-

@@ -35,4 +35,3 @@ class Manager(object):
                    " WHERE pins.name = '{1}'"
                    " AND devices.uuid = '{2}'".
                    format(int(value), led, device_uuid))
-

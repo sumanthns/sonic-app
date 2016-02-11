@@ -19,3 +19,6 @@ __pycache__/
 
 # IDE related
 .idea
+
+# any databases
+**/*.db

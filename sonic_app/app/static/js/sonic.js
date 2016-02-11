@@ -25,17 +25,29 @@ function pollPin(elem, expectData, device_id) {
 function togglePin(elem, device_id) {
     var pinName = elem.id;
     var elemClass = elem.className;
-    console.log(elemClass);
     var data = "";
+    var csrftoken = $('meta[name=csrf-token]').attr('content');
     if (elemClass === 'btn btn-danger'){
         data = "True";
     } else if (elemClass === "btn btn-success"){
         data = "False";
     }
     elem.disabled = true;
-    $.post("/device/" + device_id + "/pin/" + pinName, {status: data}).done(function(){
-        pollPin(elem, data, device_id);
-    });
+    $.ajax({
+        url: "/device/" + device_id + "/pin/" + pinName,
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        },
+        type: 'POST',
+        data: {status: data},
+        success: function(){
+            pollPin(elem, data, device_id)
+        }
+
+    })
+//    $.post("/device/" + device_id + "/pin/" + pinName, {status: data}).done(function(){
+//        pollPin(elem, data, device_id);
+//    });
 }
 
 function reloadPins(device_id) {

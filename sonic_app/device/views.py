@@ -20,34 +20,30 @@ class CreateDeviceView(MethodView):
         form = DeviceForm()
         if form.validate_on_submit():
             model = form.model.data
-            device = DeviceFactory(model).get_device()
+            device = DeviceFactory(model).create_device()
             device.name = form.name.data
             device.model = model
             device.uuid = str(uuid.uuid4())
             device.create_pins()
             db.session.add(device)
             db.session.commit()
-            return redirect(url_for('device.edit_device', device_id=device.id))
+            return redirect(url_for('device.show_layout', device_id=device.id))
         flash_errors(form)
         return render_template('device.html', form=form)
 
 
-class EditDeviceView(MethodView):
-    def get(self, device_id):
-        device = get_object_or_404(Device, Device.id == device_id)
-        form = DeviceForm(device)
-        return render_template('device.html', form=form)
-
+class DeleteDeviceView(MethodView):
     def post(self, device_id):
         device = get_object_or_404(Device, Device.id == device_id)
-        form = DeviceForm(device)
-        if form.validate_on_submit():
-            device.name = request.form.get('name')
-            device.model = request.form.get('model')
-            db.session.commit()
-            return redirect(url_for('device.edit_device', device_id=device.id))
-        flash_errors(form)
-        return render_template('device.html', form=form)
+        db.session.delete(device)
+        db.session.commit()
+        return redirect(url_for('device.list'))
+
+
+class ListDeviceView(MethodView):
+    def get(self):
+        devices = Device.query.all()
+        return render_template('devices.html', devices=devices)
 
 
 class LayoutView(MethodView):
